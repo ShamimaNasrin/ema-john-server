@@ -19,11 +19,15 @@ async function run() {
         const productCollection = client.db('emaJohn').collection('products');
 
         app.get('/products', async (req, res) => {
-            const query = {};
+            const page = parseInt(req.query.page);
+            const size = parseInt(req.query.size);
+            console.log(page, size);
+            const query = {}
             const cursor = productCollection.find(query);
-            const allProducts = await cursor.toArray();
-            res.send(allProducts);
-        })
+            const products = await cursor.toArray();
+            const count = await productCollection.estimatedDocumentCount();
+            res.send({ count, products });
+        });
 
     }
     finally {
